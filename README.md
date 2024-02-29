@@ -1,2 +1,2 @@
 # datafusion-sprox
-DataFusion S3 Proxy 
+DataFusion Proxy 

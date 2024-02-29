@@ -1,0 +1,12 @@
+[package]
+name = "datafusion-sprox"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+aws-sdk-s3 = "1.17.0"
+datafusion = "36.0.0"
+moka = "0.12.5"
+s3s = "0.8.1"
+uuid = { version = "1.7.0", features = ["v4"] }
