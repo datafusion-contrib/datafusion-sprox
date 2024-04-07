@@ -4,7 +4,7 @@ default:
 
 # Build the things
 build:
-    echo Building sprox...
+    cargo build
 
 # Test the things
 test:

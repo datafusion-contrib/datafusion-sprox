@@ -1,0 +1,22 @@
+[package]
+name = "s3s-aws"
+version = "0.10.0-dev"
+edition = "2021"
+description = "S3 service adapter integrated with aws-sdk-s3"
+license = "Apache-2.0"
+readme = "../../README.md"
+repository = "https://github.com/Nugine/s3s"
+keywords = ["s3"]
+categories = ["web-programming", "web-programming::http-server"]
+
+[dependencies]
+async-trait = "0.1.73"
+aws-sdk-s3 = "1.17.0"
+aws-smithy-runtime-api = { version = "1.2.0", features = ["client", "http-1x"] }
+aws-smithy-types = { version = "1.1.8", features = ["http-body-1-x"] }
+aws-smithy-types-convert = { version = "0.60.8", features = ["convert-time"] }
+hyper = "1.1.0"
+s3s = { version = "0.10.0-dev", path = "../s3s" }
+sync_wrapper = "1.0.0"
+tracing = "0.1.37"
+transform-stream = "0.3.0"
