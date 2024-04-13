@@ -1,7 +1,7 @@
 # Get Sprox Running
 The following command runs `sprox` locally, using the `data` directory as S3 root.
 
-    $ RUST_LOG=debug cargo run --features=binary data --access-key=A --secret-key=B
+    $ RUST_LOG=debug cargo run  data --access-key=A --secret-key=B
 
 
 # Throw AWS config into env so it doesn't need to be sourced continuously:

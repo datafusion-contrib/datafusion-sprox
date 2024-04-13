@@ -1,0 +1,25 @@
+
+[workspace]
+members = [
+    "crates/s3s",
+    "crates/s3s-aws",
+    "crates/sprox",
+]
+#exclude = ["datafusion-cli", "dev/depcheck"]
+resolver = "2"
+
+[workspace.package]
+authors = ["Sprox Authors <todo@example.com>"]
+version = "0.10.0-dev"
+edition = "2021"
+description = "An experimental S3-compatible proxy for accelerating embedded analytics"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/datafusion-contrib/datafusion-sprox"
+keywords = ["s3", "datafusion"]
+categories = ["web-programming"]
+rust-version = "1.73"
+
+[workspace.dependencies]
+s3s-aws = { version = "0.10.0-dev", path = "crates/s3s-aws" }
+s3s = { version = "0.10.0-dev", path = "crates/s3s" }
