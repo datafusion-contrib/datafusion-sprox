@@ -7,6 +7,8 @@ Projects like [DataFusion](https://arrow.apache.org/datafusion/), [Velox](https:
 
 But as awesome as S3 is, continuously `GET`ing files from it for local/embedded analytical workflows is silly ([and maybe even problematic](https://www.mdpi.com/2076-3417/11/18/8540)).
 
+Read more in [README.md](crates/sprox/README.md) and [dev/DREAMS.md](dev/DREAMS.md).
+
 # Inspiration(s)
 
 * [nginx](https://docs.nginx.com/nginx/admin-guide/web-server/)
