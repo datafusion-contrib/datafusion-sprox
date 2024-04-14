@@ -59,19 +59,62 @@ select * from read_parquet('s3://sprox/sample.parquet');
 
 ```
 
-# Query sample data in local sprox bucket using DataFusion (💀):
+# Query sample data in local sprox bucket using DataFusion:
 
+Using Environment Variables:
+```shell
+AWS_ALLOW_HTTP=true  AWS_ACCESS_KEY_ID=A AWS_SECRET_ACCESS_KEY=B AWS_ENDPOINT=http://localhost:8080  datafusion-cli
+
+> CREATE EXTERNAL TABLE sample
+STORED AS PARQUET
+LOCATION 's3://sprox/sample.parquet';
+0 row(s) fetched.
+Elapsed 0.226 seconds.
+
+> SELECT * FROM sample;
++----------------------------------+----------------------------+----------------------------+------------+---------------+-------------+-------------+---------------------------------------------------+--------------+------------------------------+---------+---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------+
+| uuid                             | timestamp                  | buzTimestamp               | buzVersion | buzName       | buzEnv      | protocol    | schema                                            | vendor       | namespace                    | version | isValid | validationError                                                                                                                                                                                                                                | contexts                                                                                                                                                            | payload                                                               |
++----------------------------------+----------------------------+----------------------------+------------+---------------+-------------+-------------+---------------------------------------------------+--------------+------------------------------+---------+---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------+
+| a3ff45f69c924a98b4aab43698b6da74 | 2023-04-18T01:35:20.885810 | 2023-04-18T01:35:20.885810 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
+| 288c1c89212a4e97ba06c0fd67a74469 | 2023-04-18T01:35:20.885841 | 2023-04-18T01:35:20.885841 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
+| 6165a3c752074ae28bf8b39a303d9c23 | 2023-04-18T01:35:20.885852 | 2023-04-18T01:35:20.885852 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
+| 5693548e30174a3eb3180c5eb15ada30 | 2023-04-18T01:35:20.885870 | 2023-04-18T01:35:20.885870 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
++----------------------------------+----------------------------+----------------------------+------------+---------------+-------------+-------------+---------------------------------------------------+--------------+------------------------------+---------+---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------+
+4 row(s) fetched.
+Elapsed 0.017 seconds.
 ```
+
+Using config options:
+(note needs a newer version than datafusion `37.0.0`, due to [this issue])
+
+[this issue]: https://github.com/apache/arrow-datafusion/issues/10072
+
+```shell
 datafusion-cli
-
-
-CREATE EXTERNAL TABLE sample
+DataFusion CLI v37.0.0
+> CREATE EXTERNAL TABLE sample
 STORED AS PARQUET
 OPTIONS(
     'aws.access_key_id' 'A',
     'aws.secret_access_key' 'B',
-    'aws.oss.endpoint' 'http://localhost:8080'
+    'aws.endpoint' 'http://localhost:8080',
+    'aws.allow_http' 'true',
 )
-LOCATION 'oss://sprox/sample.parquet';
-Object Store error: Generic S3 error: Error after 0 retries in 2.291µs, max_retries:10, retry_timeout:180s, source:builder error for url (http://localhost:8080/sample.parquet): URL scheme is not allowed
+LOCATION 's3://sprox/sample.parquet';
+0 row(s) fetched.
+Elapsed 0.147 seconds.
+
+> -- Query
+SELECT * FROM sample;
++----------------------------------+----------------------------+----------------------------+------------+---------------+-------------+-------------+---------------------------------------------------+--------------+------------------------------+---------+---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------+
+| uuid                             | timestamp                  | buzTimestamp               | buzVersion | buzName       | buzEnv      | protocol    | schema                                            | vendor       | namespace                    | version | isValid | validationError                                                                                                                                                                                                                                | contexts                                                                                                                                                            | payload                                                               |
++----------------------------------+----------------------------+----------------------------+------------+---------------+-------------+-------------+---------------------------------------------------+--------------+------------------------------+---------+---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------+
+| a3ff45f69c924a98b4aab43698b6da74 | 2023-04-18T01:35:20.885810 | 2023-04-18T01:35:20.885810 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
+| 288c1c89212a4e97ba06c0fd67a74469 | 2023-04-18T01:35:20.885841 | 2023-04-18T01:35:20.885841 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
+| 6165a3c752074ae28bf8b39a303d9c23 | 2023-04-18T01:35:20.885852 | 2023-04-18T01:35:20.885852 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
+| 5693548e30174a3eb3180c5eb15ada30 | 2023-04-18T01:35:20.885870 | 2023-04-18T01:35:20.885870 | x.x.dev    | buz-bootstrap | development | cloudevents | io.silverton/buz/example/gettingStarted/v1.0.json | io.silverton | buz.example.quickstart.click | 1.0     | false   | {errorType: invalid payload, errorResolution: publish a valid payload, payloadValidationErrors: [{field: /, description: additional properties are not allowed, errorType: /: {"action":"didSometh... additional properties are not allowed}]} | {io.silverton/buz/internal/contexts/httpHeaders/v1.0.json: {Accept: */*, Content-Length: 915, Content-Type: application/cloudevents+json, User-Agent: curl/7.86.0}} | {action: didSomething, name: jakthom, somethingElse: bad, userId: 10} |
++----------------------------------+----------------------------+----------------------------+------------+---------------+-------------+-------------+---------------------------------------------------+--------------+------------------------------+---------+---------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------+
+4 row(s) fetched.
+Elapsed 0.023 seconds.
+
 ```
